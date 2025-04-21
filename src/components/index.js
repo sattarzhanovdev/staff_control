@@ -1,4 +1,6 @@
+import Alert from "./alert";
 import CheckIn from "./checkIn";
+import LoginForm from "./loginForm";
 import Navbar from "./navbar";
 import Tasks from "./tasks";
 import User from "./user";
@@ -9,5 +11,7 @@ export const Components = {
   Tasks, 
   Navbar, 
   ProfileDetails, 
-  User
+  User, 
+  LoginForm,
+  Alert
 }

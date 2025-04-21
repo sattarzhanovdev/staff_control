@@ -52,4 +52,14 @@ export const PUBLIC_ROUTES = [
     route: "/profile/",
     page: <Pages.Profile />,
   },
+  {
+    id: 5,
+    route: "/login/",
+    page: <Pages.Login />,
+  },
+  {
+    id: 6, 
+    route: "/task/",
+    page: <Pages.TaskInfo />
+  }
 ]

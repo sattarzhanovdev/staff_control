@@ -3,6 +3,8 @@ import c from './user.module.scss'
 import { Icons } from '../../assets/icons'
 
 const User = () => {
+  const user = JSON.parse(localStorage.getItem('user'))
+
   return (
     <div className={c.container}>
       <div className={c.user}>
@@ -10,8 +12,8 @@ const User = () => {
           <img src={Icons.photo} alt="" />
         </div>
         <div className={c.info}>
-          <h2>Саттаржанов Даниел</h2>
-          <p>Программист</p>
+          <h2>{`${user["имя"]} ${user["фамилия"]}`}</h2>
+          <p>{user["должность"]}</p>
         </div>
       </div>
     </div>

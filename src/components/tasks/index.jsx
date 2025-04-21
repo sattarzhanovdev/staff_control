@@ -2,8 +2,37 @@ import React from 'react'
 import c from './tasks.module.scss'
 import { Link } from 'react-router-dom'
 import { Icons } from '../../assets/icons'
+import { API } from '../../api'
 
 const Tasks = () => {
+  const [ tasks, setTasks ] = React.useState(null)
+
+  const token = localStorage.getItem('token')
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  React.useEffect(() => {
+    API.getTasks(token)
+      .then(res => {
+        const result = res.data.filter(item => item["исполнитель"] === user["id"])
+        
+        setTasks(result)
+      })
+  }, [])
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+
+    const formatted = new Intl.DateTimeFormat('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'UTC',
+    }).format(date);
+
+    return formatted;
+  }
+  
   return (
     <div className={c.container}>
       <div className={c.tasks}>
@@ -11,40 +40,27 @@ const Tasks = () => {
           Задачи на сегодня
         </h3>
         <div className={c.tasksList}>
-          <div className={c.task}>
-            <h3>
-              Задача 1
-            </h3>
-            <div className={c.info}>
-              <p>
-                <span>Срок:</span> 12:00
-              </p>
-              <p>
-                <span>Приоритет:</span> Срочно
-              </p>
-            </div>
+          {
+            tasks && tasks.map(item => (
+              <div className={c.task}>
+                <h3>
+                  {item["название"]}
+                </h3>
+                <div className={c.info}>
+                  <p>
+                    <span>Срок:</span> {formatDate(item["срок"])}
+                  </p>
+                  <p>
+                    <span>Приоритет:</span> {item["приоритет"].slice(0, 1).toUpperCase() + item["приоритет"].slice(1)}
+                  </p>
+                </div>
 
-            <Link to="/tasks/1">
-              Подробнее <img src={Icons.arrow_black} alt="" />
-            </Link>
-          </div>
-          <div className={c.task}>
-            <h3>
-              Задача 1
-            </h3>
-            <div className={c.info}>
-              <p>
-                <span>Срок:</span> 12:00
-              </p>
-              <p>
-                <span>Приоритет:</span> Срочно
-              </p>
-            </div>
-
-            <Link to="/tasks/1">
-              Подробнее <img src={Icons.arrow_black} alt="" />
-            </Link>
-          </div>
+                <Link to="/task/" onClick={() => localStorage.setItem('task', JSON.stringify(item))}>
+                  Подробнее <img src={Icons.arrow_black} alt="" />
+                </Link>
+              </div>
+            ))
+          }
         </div>
       </div>
     </div>

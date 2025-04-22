@@ -3,6 +3,7 @@ import c from './tasks.module.scss'
 import { Link } from 'react-router-dom'
 import { Icons } from '../../assets/icons'
 import { API } from '../../api'
+import UserName from '../username'
 
 const Tasks = () => {
   const [ tasks, setTasks ] = React.useState(null)
@@ -13,9 +14,12 @@ const Tasks = () => {
   React.useEffect(() => {
     API.getTasks(token)
       .then(res => {
-        const result = res.data.filter(item => item["исполнитель"] === user["id"])
-        
-        setTasks(result)
+        if(user['должность'] !== 'Администратор') {
+          const result = res.data.filter(item => item["исполнитель"] === user["id"] && item["статус"] !== 'Выполнена')
+          setTasks(result.reverse())
+        }else{
+          setTasks(res.data.filter(item => item["статус"] !== 'выполнена').reverse())
+        }
       })
   }, [])
 
@@ -32,7 +36,7 @@ const Tasks = () => {
 
     return formatted;
   }
-  
+
   return (
     <div className={c.container}>
       <div className={c.tasks}>
@@ -50,6 +54,11 @@ const Tasks = () => {
                   <p>
                     <span>Срок:</span> {formatDate(item["срок"])}
                   </p>
+                  {
+                    user['должность'] === 'Администратор' && (<p>
+                      <span>Исполнитель:</span> <UserName id={item["исполнитель"]} />
+                    </p>)
+                  }
                   <p>
                     <span>Приоритет:</span> {item["приоритет"].slice(0, 1).toUpperCase() + item["приоритет"].slice(1)}
                   </p>

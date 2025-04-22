@@ -14,6 +14,12 @@ const User = () => {
         <div className={c.info}>
           <h2>{`${user["имя"]} ${user["фамилия"]}`}</h2>
           <p>{user["должность"]}</p>
+          <button
+            onClick={() => {
+              localStorage.clear()
+              window.location.reload()
+            }}
+          >Выйти с аккаунта</button>
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import AddTask from "./addTask";
 import Alert from "./alert";
 import CheckIn from "./checkIn";
 import LoginForm from "./loginForm";
@@ -13,5 +14,6 @@ export const Components = {
   ProfileDetails, 
   User, 
   LoginForm,
-  Alert
+  Alert, 
+  AddTask
 }

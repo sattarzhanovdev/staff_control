@@ -8,6 +8,11 @@ export const API = {
       Authorization: `token ${token}`
     }
   }),
+  getWorkers: () => axios.get(`/работники/`, {
+    headers: {
+      Authorization: `token ${token}`
+    }
+  }),
   getUser: (id) => axios.get(`/работники/${id}/`, {
     headers: {
       Authorization: `token ${token}`
@@ -19,6 +24,11 @@ export const API = {
     }
   }),
   getTask: (id) => axios.get(`/задачи/${id}/`),
+  postTask: (data) => axios.post(`/задачи/`, data, {
+    headers: {
+      Authorization: `token ${token}`
+    }
+  }),
   postAttendance: (token, data) => axios.post('/посещения/', data, {
     headers: {
       Authorization: `token ${token}`
@@ -28,5 +38,10 @@ export const API = {
     headers: {
       Authorization: `Token ${token}`
     }
-  })
+  }), 
+  getAttendance: () => axios.get('/посещения/', {
+    headers: {
+      Authorization: `token ${token}`
+    }
+  }),
 }

@@ -10,6 +10,7 @@ const CheckIn = () => {
   const [ lateTime, setLateTime ] = React.useState(0)
   const [ time, setTime ] = React.useState('')
   const [lateMinutes, setLateMinutes] = React.useState(0);
+  const [ attendance, setAttendance ] = React.useState(false)
 
   const user = JSON.parse(localStorage.getItem('user'))
   const token = localStorage.getItem('token')
@@ -41,11 +42,11 @@ const CheckIn = () => {
   }, [user]);
   
 
-  // const workLat = 42.844078553640436;
-  // const workLng = 74.60032143482854;
+  const workLat = 42.844003;
+  const workLng = 74.592026;
 
-  const workLat = 40.53633557888629;
-  const workLng = 72.8339069223278;
+  // const workLat = 40.53633557888629;  real data
+  // const workLng = 72.8339069223278; real data
 
 
   function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
@@ -65,6 +66,7 @@ const CheckIn = () => {
 
 
   function handleCheckIn() {
+    
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -110,6 +112,7 @@ const CheckIn = () => {
           await API.postAttendance(token, data);
 
           setActive(true);
+          
         } catch (err) {
           console.error('❌ Ошибка отправки посещения:', err.response?.data || err.message);
           alert('Ошибка при отметке прихода.');
@@ -118,9 +121,29 @@ const CheckIn = () => {
       (err) => {
         console.error("Ошибка геолокации", err);
         alert("Геолокация не работает. Разрешите доступ.");
+        navigator.permissions.query({ name: 'geolocation' }).then((res) => {
+          console.log("Статус геолокации:", res.state);
+          if (res.state === 'denied') {
+            alert('Вы ранее запретили геолокацию. Разрешите её вручную в настройках браузера.');
+          }
+        });
       }
     );
   }
+  
+  React.useEffect(() => {
+    API.getAttendance()
+      .then(res => {
+        console.log(res.data);
+        const isCome = res.data.find(item => item['работник'] === user.id && item['дата'] === new Date().toISOString().split('T')[0])
+        if(isCome){
+          setAttendance(true)
+        } else {
+          setAttendance(false)
+        }
+        
+      })
+  }, [active])
 
 
   return (
@@ -132,13 +155,21 @@ const CheckIn = () => {
       <div className={c.check}>
         <div>
           <h1>{user["график_работы"]}</h1>
-          {lateMinutes > 0 && (
+          {lateMinutes > 0 && !attendance ? (
             <p>
               Вы опаздываете!
             </p>
+          ) : (
+            <p style={{ color: '#98CA02' }}>
+              Вы на работе
+            </p>
           )}
         </div>
-        <button onClick={() => handleCheckIn()}>
+        <button 
+          onClick={() => handleCheckIn()}
+          disabled={attendance}
+          style={{ background: attendance ? '#ccc' : '#98CA02' }}
+        >
           Отметиться <img src={Icons.arrow} alt="" />
         </button>
       </div>

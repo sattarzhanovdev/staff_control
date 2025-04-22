@@ -1,0 +1,22 @@
+.tasksPage {
+  margin-top: 60px;
+  .addTask{
+    margin-bottom: 100px;
+    display: flex;
+    justify-content: center;
+    button{
+      width: 90%;
+      max-width: 360px;
+      height: 50px;
+      border-radius: 50px;
+      border: 0;
+      color: white;
+      font-size: 16px;
+      background: #98CA02;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+  }
+}

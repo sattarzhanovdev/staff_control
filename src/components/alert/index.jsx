@@ -28,7 +28,14 @@ const Alert = ({type, lateTime, time, setActive}) => {
             <img src={Icons.heart_break} alt="" />
             <h2>ВЫ НЕ НА РАБОТЕ!</h2>
             <p>Попытка отметиться не находясь в маркете :(</p>
-          </> : ''
+          </> : 
+          type === 'leave' ?
+          <>
+            <img src={Icons.heart_break} alt="" />
+            <h2>Хорошего пути!</h2>
+            {/* <p>Попытка отметиться не находясь в маркете :(</p> */}
+          </> :
+          ''
         }
         <button onClick={() => setActive(false)}>
           Закрыть <img src={Icons.arrow} alt="" />

@@ -42,11 +42,11 @@ const CheckIn = () => {
   }, [user]);
   
 
-  // const workLat = 42.844003;
-  // const workLng = 74.592026;
+  const workLat = 42.867051;
+  const workLng = 74.589865;
 
-  const workLat = 40.53633557888629; 
-  const workLng = 72.8339069223278; 
+  // const workLat = 40.53633557888629; 
+  // const workLng = 72.8339069223278; 
 
 
   function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
@@ -64,72 +64,87 @@ const CheckIn = () => {
     return R * c; // Расстояние в метрах
   }
 
+  const attendanceId = localStorage.getItem('attendanceId')
+  const comeTime = localStorage.getItem('comeTime')
 
-  function handleCheckIn() {
-    
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        const distance = getDistanceFromLatLonInMeters(latitude, longitude, workLat, workLng);
 
-        if (distance > 50) {
-          setType('workplace');
-          setActive(true);
-          return;
-        }
-
-        console.log("✅ Вы на рабочем месте. Расстояние:", distance.toFixed(1), "м");
-
-        const now = new Date();
-
-        const [workHour, workMinute] = user["график_работы"].split(':').map(Number);
-        const planned = new Date(now);
-        planned.setHours(workHour);
-        planned.setMinutes(workMinute);
-        planned.setSeconds(0);
-
-        const lateMs = now - planned;
-        const lateMinutes = lateMs > 0 ? Math.floor(lateMs / 60000) : 0;
-
-        const formattedTime = now.toTimeString().slice(0, 8);      
-        const formattedDate = now.toISOString().split('T')[0];    
-
-        console.log(formattedTime);
-        
-        if(lateMinutes > 0){
-          setType('late')
-          setLateTime(lateMinutes)
-          setTime(formattedTime)
-        }
-
-        try {
+  async function handleCheckIn() {
+    try {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const { latitude, longitude } = pos.coords;
+          const distance = getDistanceFromLatLonInMeters(latitude, longitude, workLat, workLng);
+          const now = new Date();
+  
+          const [workHour, workMinute] = user["график_работы"].split(':').map(Number);
+          const plannedTime = new Date(now);
+          plannedTime.setHours(workHour, workMinute, 0, 0);
+  
+          const lateMs = now - plannedTime;
+          const lateMinutes = lateMs > 0 ? Math.floor(lateMs / 60000) : 0;
+  
+          const formattedTime = now.toTimeString().slice(0, 8);
+          const formattedDate = now.toISOString().split('T')[0];
+  
+          const isLeaving = Boolean(attendance); // если уже есть посещение — уход
+  
           const data = {
             работник: user.id,
             дата: formattedDate,
-            время_прихода: formattedTime,
+            время_прихода: isLeaving ? comeTime : formattedTime,
+            время_ухода: isLeaving ? formattedTime : undefined,
             опоздание_в_минутах: lateMinutes
+          };
+  
+          if (distance > 50) {
+            setType('workplace');
+          } else {
+            console.log("✅ Вы на рабочем месте. Расстояние:", distance.toFixed(1), "м");
+  
+            if (lateMinutes > 0) {
+              setType('late');
+              setLateTime(lateMinutes);
+              setTime(formattedTime);
+            }
           }
-          await API.postAttendance(token, data);
-
+  
+          if (!isLeaving) {
+            await API.postAttendance(token, data).then(res => {
+              localStorage.setItem('comeTime', res.data['время_прихода']);
+              localStorage.setItem('attendanceId', res.data.id);
+              setType('win');
+            });
+          } else {
+            await API.putAttendance(attendanceId, data).then(res => {
+              localStorage.removeItem('attendanceId');
+              localStorage.removeItem('comeTime');
+            })
+            setType('leave');
+          }
+  
           setActive(true);
-          
-        } catch (err) {
-          console.error('❌ Ошибка отправки посещения:', err.response?.data || err.message);
-          alert('Ошибка при отметке прихода.');
-        }
-      },
-      (err) => {
-        console.error("Ошибка геолокации", err);
-        alert("Геолокация не работает. Разрешите доступ.");
-        navigator.permissions.query({ name: 'geolocation' }).then((res) => {
-          console.log("Статус геолокации:", res.state);
-          if (res.state === 'denied') {
-            alert('Вы ранее запретили геолокацию. Разрешите её вручную в настройках браузера.');
+        },
+        async (err) => {
+          console.error("Ошибка геолокации:", err);
+          alert("Геолокация не работает. Разрешите доступ.");
+  
+          try {
+            const res = await navigator.permissions.query({ name: 'geolocation' });
+            console.log("Статус геолокации:", res.state);
+            if (res.state === 'denied') {
+              alert('Вы ранее запретили геолокацию. Разрешите её вручную в настройках браузера.');
+            }
+          } catch (permErr) {
+            console.error("Ошибка запроса разрешений:", permErr);
           }
-        });
-      }
-    );
+        }
+      );
+    } catch (e) {
+      console.error('❌ Ошибка отправки посещения:', e.response?.data || e.message);
+      alert('Ошибка при отметке прихода.');
+    }
   }
+  
   
   React.useEffect(() => {
     API.getAttendance()
@@ -155,22 +170,21 @@ const CheckIn = () => {
       <div className={c.check}>
         <div>
           <h1>{user["график_работы"]}</h1>
-          {lateMinutes > 0 && !attendance ? (
+          {lateMinutes > 0 && !attendanceId ? (
             <p>
               Вы опаздываете!
             </p>
-          ) : (
+          ) : attendanceId ? (
             <p style={{ color: '#98CA02' }}>
               Вы на работе
-            </p>
-          )}
+            </p> 
+          ): null}
         </div>
-        <button 
-          onClick={() => handleCheckIn()}
-          disabled={attendance}
-          style={{ background: attendance ? '#ccc' : '#98CA02' }}
-        >
-          Отметиться <img src={Icons.arrow} alt="" />
+        <button>
+          <img src={Icons.check} alt="" />
+          <p onClick={handleCheckIn}>
+            {attendanceId ? 'Уйти с работы' : 'Отметиться'}
+          </p>
         </button>
       </div>
 
@@ -180,5 +194,13 @@ const CheckIn = () => {
     </div>
   )
 }
+
+
+// завершение смены gps
+// звонок работника
+// добавить сотрудника
+// информация о смене
+
+
 
 export default CheckIn

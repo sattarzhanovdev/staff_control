@@ -1,0 +1,21 @@
+div{
+  .admin{
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    button{
+      max-width: 360px;
+      width: 100%;
+      height: 50px;
+      border-radius: 50px;
+      border: 0;
+      color: white;
+      background: #98CA02;
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+}

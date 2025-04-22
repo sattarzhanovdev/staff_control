@@ -34,6 +34,11 @@ export const API = {
       Authorization: `token ${token}`
     }
   }),
+  putAttendance: (id, data) => axios.patch(`/посещения/${id}/`, data, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  }),
   putTask: (id, data) => axios.patch(`/задачи/${id}/`, data, {
     headers: {
       Authorization: `Token ${token}`

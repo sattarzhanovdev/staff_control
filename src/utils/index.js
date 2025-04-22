@@ -61,5 +61,20 @@ export const PUBLIC_ROUTES = [
     id: 6, 
     route: "/task/",
     page: <Pages.TaskInfo />
+  }, 
+  {
+    id: 7, 
+    route: '/workers/',
+    page: <Pages.Workers />
+  }, 
+  {
+    id: 8, 
+    route: '/attendance/',
+    page: <Pages.Attendance />
+  }, 
+  {
+    id: 9,
+    route: '/addWorker/',
+    page: <Pages.AddWorker />
   }
 ]

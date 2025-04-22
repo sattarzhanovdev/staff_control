@@ -42,11 +42,11 @@ const CheckIn = () => {
   }, [user]);
   
 
-  const workLat = 42.844003;
-  const workLng = 74.592026;
+  // const workLat = 42.844003;
+  // const workLng = 74.592026;
 
-  // const workLat = 40.53633557888629;  real data
-  // const workLng = 72.8339069223278; real data
+  const workLat = 40.53633557888629; 
+  const workLng = 72.8339069223278; 
 
 
   function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {

@@ -40,7 +40,7 @@ const Attendance = () => {
       result = result.filter((item) => item.время_прихода <= timeEnd);
     }
 
-    setFiltered(result);
+    setFiltered(result.reverse());
   }, [filterDate, timeStart, timeEnd, attendances]);
 
   return (

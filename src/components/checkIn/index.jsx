@@ -42,11 +42,11 @@ const CheckIn = () => {
   }, [user]);
   
 
-  const workLat = 42.867051;
-  const workLng = 74.589865;
+  // const workLat = 40.536337; // market location
+  // const workLng = 72.834017; // market location
 
-  // const workLat = 40.53633557888629; 
-  // const workLng = 72.8339069223278; 
+  const workLat = 42.84401124225374; // sierra location
+  const workLng = 74.59213519645486; // sierra location
 
 
   function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
@@ -98,31 +98,39 @@ const CheckIn = () => {
   
           if (distance > 50) {
             setType('workplace');
+            setActive(true)
+            return; // ❌ Прерываем выполнение, если далеко
           } else {
             console.log("✅ Вы на рабочем месте. Расстояние:", distance.toFixed(1), "м");
-  
+          
             if (lateMinutes > 0) {
               setType('late');
               setLateTime(lateMinutes);
               setTime(formattedTime);
             }
+          
+            if (!attendanceId) {
+              await API.postAttendance(token, data).then(res => {
+                localStorage.setItem('comeTime', now.toTimeString().slice(0, 8));
+                localStorage.setItem('attendanceId', res.data.id);
+                setType('win');
+              });
+            } else {
+              const comeTime = localStorage.getItem('comeTime');
+              const updateData = {
+                ...data,
+                время_прихода: comeTime,
+                время_ухода: formattedTime
+              };
+              await API.putAttendance(attendanceId, updateData).then(res => {
+                localStorage.removeItem('attendanceId');
+                localStorage.removeItem('comeTime');
+              });
+              setType('leave');
+            }
+          
+            setActive(true);
           }
-  
-          if (!isLeaving) {
-            await API.postAttendance(token, data).then(res => {
-              localStorage.setItem('comeTime', res.data['время_прихода']);
-              localStorage.setItem('attendanceId', res.data.id);
-              setType('win');
-            });
-          } else {
-            await API.putAttendance(attendanceId, data).then(res => {
-              localStorage.removeItem('attendanceId');
-              localStorage.removeItem('comeTime');
-            })
-            setType('leave');
-          }
-  
-          setActive(true);
         },
         async (err) => {
           console.error("Ошибка геолокации:", err);
@@ -160,6 +168,23 @@ const CheckIn = () => {
       })
   }, [active])
 
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const { latitude, longitude } = position.coords;
+      console.log("🌍 Твоя геопозиция:");
+      console.log("Широта (lat):", latitude);
+      console.log("Долгота (lng):", longitude);
+    },
+    (err) => {
+      console.error("❌ Ошибка геолокации:", err.message);
+      alert("Геолокация не работает. Разрешите доступ в браузере.");
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    }
+  );
 
   return (
     <div className={c.checkIn}>

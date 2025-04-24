@@ -29,22 +29,24 @@
   .attendance_card {
     background-color: #8dd300;
     border-radius: 30px;
-    padding: 20px;
+    padding: 30px 20px;
     margin-bottom: 20px;
     color: black;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
     h3 {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
+      margin: 0;
       margin-bottom: 10px;
       color: white;
+      color: black;
     }
 
     .info {
       p {
         margin: 5px 0;
-        font-size: 16px;
+        font-size: 14px;
 
         span.label {
           font-weight: bold;

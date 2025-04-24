@@ -42,11 +42,11 @@ const CheckIn = () => {
   }, [user]);
   
 
-  // const workLat = 40.536337; // market location
-  // const workLng = 72.834017; // market location
+  const workLat = 40.536337; // market location
+  const workLng = 72.834017; // market location
 
-  const workLat = 42.84401124225374; // sierra location
-  const workLng = 74.59213519645486; // sierra location
+  // const workLat = 42.84401124225374; // sierra location
+  // const workLng = 74.59213519645486; // sierra location
 
 
   function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {

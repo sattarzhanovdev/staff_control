@@ -14,10 +14,19 @@ const Workers = () => {
   }, [])
 
   const deleteWorker = (id) => {
-    API.deleteWorker()
+    const asking = window.confirm('Вы уверены?')
+    if(asking){
+      API.deleteWorker(id)
+        .then(_ => {
+          alert('Работник уволен!')
+          window.location.reload()
+        })
+    }
   }
 
   const Navigate = useNavigate()
+  console.log(workers);
+  
 
   return (
     <div className={c.container}>
@@ -36,7 +45,7 @@ const Workers = () => {
                 <p>Зарплата: <span>{Number(item["зарплата"]) + Math.floor(((item.зарплата / 26) / 11) * Number(item["отработанные_часы"]))} сом</span></p>
                 <p>Жизни: <span>{item["жизни"]}</span></p>
                 <p>Отработанные часы: <span>{Number(item["отработанные_часы"]).toFixed(2)} часов</span></p>
-                <button>Уволить</button>
+                <button onClick={() => deleteWorker(item.id)}>Уволить</button>
               </div>
             ))
         }

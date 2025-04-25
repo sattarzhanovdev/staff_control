@@ -49,4 +49,9 @@ export const API = {
       Authorization: `token ${token}`
     }
   }),
+  deleteWorker: (id) => axios.delete(`/работники/${id}/`, {
+    headers: {
+      Authorization: `token ${token}`
+    }
+  }) 
 }

@@ -18,7 +18,7 @@ const Tasks = () => {
           const result = res.data.filter(item => item["исполнитель"] === user["id"] && item["статус"] !== 'Выполнена')
           setTasks(result.reverse())
         }else{
-          setTasks(res.data.filter(item => item["статус"] !== 'выполнена').reverse())
+          setTasks(res.data.reverse())
         }
       })
   }, [])

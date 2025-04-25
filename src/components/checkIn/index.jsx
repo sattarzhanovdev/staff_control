@@ -11,9 +11,11 @@ const CheckIn = () => {
   const [ time, setTime ] = React.useState('')
   const [lateMinutes, setLateMinutes] = React.useState(0);
   const [ attendance, setAttendance ] = React.useState(false)
+  const [ attendances, setAttendances ] = React.useState(null)
 
   const user = JSON.parse(localStorage.getItem('user'))
   const token = localStorage.getItem('token')
+  const now = new Date();
 
 
   React.useEffect(() => {
@@ -42,11 +44,11 @@ const CheckIn = () => {
   }, [user]);
   
 
-  const workLat = 40.536337; // market location
-  const workLng = 72.834017; // market location
+  // const workLat = 40.536337; // market location
+  // const workLng = 72.834017; // market location
 
-  // const workLat = 42.84401124225374; // sierra location
-  // const workLng = 74.59213519645486; // sierra location
+  const workLat =  42.832703701676515; // my location
+  const workLng = 74.6094250632166; // my location
 
 
   function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
@@ -66,7 +68,9 @@ const CheckIn = () => {
 
   const attendanceId = localStorage.getItem('attendanceId')
   const comeTime = localStorage.getItem('comeTime')
+  const todayDate =`${now.getFullYear()}-${now.getMonth() < 10 ? `0${now.getMonth()+1}` : now.getMonth()}-${now.getDate()}`
 
+  const todayCame = attendances?.find(item => item['дата'] === todayDate && item["работник"] === user['id']);
 
   async function handleCheckIn() {
     try {
@@ -74,7 +78,6 @@ const CheckIn = () => {
         async (pos) => {
           const { latitude, longitude } = pos.coords;
           const distance = getDistanceFromLatLonInMeters(latitude, longitude, workLat, workLng);
-          const now = new Date();
   
           const [workHour, workMinute] = user["график_работы"].split(':').map(Number);
           const plannedTime = new Date(now);
@@ -103,7 +106,7 @@ const CheckIn = () => {
           } else {
             console.log("✅ Вы на рабочем месте. Расстояние:", distance.toFixed(1), "м");
           
-            if (lateMinutes > 0) {
+            if (lateMinutes > 0 && !attendanceId) {
               setType('late');
               setLateTime(lateMinutes);
               setTime(formattedTime);
@@ -113,7 +116,7 @@ const CheckIn = () => {
               await API.postAttendance(token, data).then(res => {
                 localStorage.setItem('comeTime', now.toTimeString().slice(0, 8));
                 localStorage.setItem('attendanceId', res.data.id);
-                setType('win');
+                setType(lateMinutes < 0 ? 'win' : 'late');
               });
             } else {
               const comeTime = localStorage.getItem('comeTime');
@@ -157,7 +160,9 @@ const CheckIn = () => {
   React.useEffect(() => {
     API.getAttendance()
       .then(res => {
+        setAttendances(res.data)
         console.log(res.data);
+        
         const isCome = res.data.find(item => item['работник'] === user.id && item['дата'] === new Date().toISOString().split('T')[0])
         if(isCome){
           setAttendance(true)
@@ -186,6 +191,9 @@ const CheckIn = () => {
     }
   );
 
+  console.log(todayCame + 'today');
+  
+
   return (
     <div className={c.checkIn}>
       <div className={c.header}>
@@ -205,9 +213,12 @@ const CheckIn = () => {
             </p> 
           ): null}
         </div>
-        <button>
+        <button
+          disabled={!todayCame || todayCame && todayCame['время_ухода'] === null ? false : true}
+          onClick={handleCheckIn}
+        >
           <img src={Icons.check} alt="" />
-          <p onClick={handleCheckIn}>
+          <p>
             {attendanceId ? 'Уйти с работы' : 'Отметиться'}
           </p>
         </button>

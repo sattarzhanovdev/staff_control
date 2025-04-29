@@ -44,11 +44,11 @@ const CheckIn = () => {
   }, [user]);
   
 
-  // const workLat = 40.536337; // market location
-  // const workLng = 72.834017; // market location
+  const workLat = 40.536337; // market location
+  const workLng = 72.834017; // market location
 
-  const workLat =  42.832703701676515; // my location
-  const workLng = 74.6094250632166; // my location
+  // const workLat =  42.832703701676515; // my location
+  // const workLng = 74.6094250632166; // my location
 
 
   function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {

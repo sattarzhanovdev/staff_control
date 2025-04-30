@@ -56,6 +56,10 @@ const AddWorker = () => {
           <input type="text" name="должность" placeholder="Должность" onChange={handleChange} required />
           <input type="number" name="год_рождения" placeholder="Год рождения" onChange={handleChange} required />
           <input type="number" name="зарплата" placeholder="Зарплата" onChange={handleChange} required />
+          <select name='тип_получения_зарплаты' onChange={handleChange} required>
+            <option value="Фиксированное">Фиксированное</option>
+            <option value="Дневное">Дневное</option>
+          </select>
           <input type="time" name="график_работы" placeholder="График (например, 09:00)" onChange={handleChange} required />
           <input type="text" name="телефон" placeholder="Телефон" onChange={handleChange} required />
           <button type="submit" className={c.btn}>Добавить</button>

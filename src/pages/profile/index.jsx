@@ -17,6 +17,7 @@ const Profile = () => {
           <div className={c.admin}>
             <button onClick={() => Navigate('/workers/')}>Работники</button>
             <button onClick={() => Navigate('/attendance/')}>Посещения</button>
+            <button onClick={() => Navigate('/expenses/')}>Расходы</button>
 
           </div>
         ) : 

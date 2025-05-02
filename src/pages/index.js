@@ -1,5 +1,6 @@
 import AddWorker from "./addWorker";
 import Attendance from "./attendance";
+import Expenses from "./expenses";
 import Home from "./home";
 import Login from "./login";
 import Notifications from "./notifications";
@@ -17,5 +18,6 @@ export const Pages = {
   TaskInfo, 
   Workers, 
   Attendance, 
-  AddWorker
+  AddWorker, 
+  Expenses
 }

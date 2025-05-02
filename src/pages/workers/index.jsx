@@ -40,9 +40,10 @@ const Workers = () => {
                 <h3>{item["имя"]} {item["фамилия"]}</h3>
                 <p>График работы: <span>{item["график_работы"]}</span></p>
                 <p>Должность: <span>{item["должность"]}</span></p>
-                <p>Фиксированная зарплата: <span>{item["зарплата"]} сом</span></p>
-                <p>Бонус: <span>{Math.floor(((item.зарплата / 26) / 11) * Number(item["отработанные_часы"]))} сом</span></p>
-                <p>Зарплата: <span>{Number(item["зарплата"]) + Math.floor(((item.зарплата / 26) / 11) * Number(item["отработанные_часы"]))} сом</span></p>
+                <p>Зарплата: <span>{item["зарплата"]} сом</span></p>
+                <p>Бонус: <span>{Number(item["отработанные_часы"]) > 286 ? (Number(item["отработанные_часы"])-286) * (Number(item['зарплата'])/26/11).toFixed(0, 2): 0} сом</span></p>
+                {/* <p>Зарплата: <span>{Number(item["зарплата"]) + Math.floor(((item.зарплата / 26) / 11) * Number(item["отработанные_часы"]))} сом</span></p> */}
+                <p>Тип получения зарплаты: <span>{item["тип_получения_зарплаты"]}</span></p>
                 <p>Жизни: <span>{item["жизни"]}</span></p>
                 <p>Отработанные часы: <span>{Number(item["отработанные_часы"]).toFixed(2)} часов</span></p>
                 <button onClick={() => deleteWorker(item.id)}>Уволить</button>

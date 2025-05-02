@@ -3,6 +3,7 @@ import c from './task.module.scss'
 import { Icons } from '../../assets/icons'
 import { API } from '../../api'
 import { useNavigate } from 'react-router-dom'
+import { IMaskInput } from 'react-imask'
 
 const TaskInfo = () => {
   const task = JSON.parse(localStorage.getItem('task'))
@@ -11,7 +12,12 @@ const TaskInfo = () => {
   const [isStarted, setIsStarted] = useState('в_ожидании')
   const [startTime, setStartTime] = useState(null)
   const [seconds, setSeconds] = useState(0)
+  const [formData, setFormData] = useState({
+    дата: task?.срок ? new Date(task.срок).toLocaleDateString('ru-RU') : '',
+    время: task?.срок ? new Date(task.срок).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : ''
+  })
   const intervalRef = useRef(null)
+  const Navigate = useNavigate()
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr)
@@ -108,8 +114,27 @@ const TaskInfo = () => {
     }
   }
 
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const updateDeadline = async () => {
+    const [day, month, year] = formData.дата.split('.')
+    const [hour, minute] = formData.время.split(':')
+
+    const iso = new Date(`${year}-${month}-${day}T${hour}:${minute}:00Z`).toISOString()
+
+    try {
+      await API.putTask(task.id, { срок: iso })
+      alert('Срок успешно обновлён!')
+      Navigate('/')
+    } catch (err) {
+      console.error('Ошибка при обновлении срока:', err)
+      alert('Не удалось обновить срок.')
+    }
+  }
+
   const user = JSON.parse(localStorage.getItem('user'))
-  const Navigate = useNavigate()
 
   return (
     <div className={c.container} style={isStarted === 'в_процессе' || task['статус'] === 'в_процессе' ? { background: '#EFDF00' } : null}>
@@ -128,6 +153,29 @@ const TaskInfo = () => {
               <p><b>Постановщик:</b> <span>{setterName || 'Загрузка...'}</span></p>
               <p><b>Статус задачи:</b> <span>{task['статус']}</span></p>
               <p><b>Потраченное время:</b> <span>{task['потраченное_время_в_минутах']}</span></p>
+            </div>
+
+            <div className={c.editDeadline}>
+              <div className={c.edit}>
+                <label><b>Изменить срок:</b></label>
+                <div>
+                  <IMaskInput
+                    mask="00.00.0000"
+                    placeholder="Срок дата"
+                    onAccept={(value) => handleChange('дата', value)}
+                  />
+                </div>
+
+                <div>
+                  <IMaskInput
+                    mask="00:00"
+                    placeholder="Срок время"
+                    onAccept={(value) => handleChange('время', value)}
+                  />
+                </div>
+              </div>
+
+              <button onClick={updateDeadline}>Сохранить срок</button>
             </div>
           </div>
         </div>

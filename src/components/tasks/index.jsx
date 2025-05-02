@@ -45,30 +45,34 @@ const Tasks = () => {
         </h3>
         <div className={c.tasksList}>
           {
-            tasks && tasks.map(item => (
-              <div className={c.task}>
-                <h3>
-                  {item["название"]}
-                </h3>
-                <div className={c.info}>
-                  <p>
-                    <span>Срок:</span> {formatDate(item["срок"])}
-                  </p>
-                  {
-                    user['должность'] === 'Администратор' && (<p>
-                      <span>Исполнитель:</span> <UserName id={item["исполнитель"]} />
-                    </p>)
-                  }
-                  <p>
-                    <span>Приоритет:</span> {item["приоритет"].slice(0, 1).toUpperCase() + item["приоритет"].slice(1)}
-                  </p>
-                </div>
+            tasks && tasks.map(item => {
+              const isOverdue = new Date(item["срок"]) < new Date();
 
-                <Link to="/task/" onClick={() => localStorage.setItem('task', JSON.stringify(item))}>
-                  Подробнее <img src={Icons.arrow_black} alt="" />
-                </Link>
-              </div>
-            ))
+              return (
+                <div className={c.task} id={isOverdue ? c.overdue : ''}>
+                  <h3>
+                    {item["название"]}
+                  </h3>
+                  <div className={c.info}>
+                    <p>
+                      <span>Срок:</span> {formatDate(item["срок"])}
+                    </p>
+                    {
+                      user['должность'] === 'Администратор' && (<p>
+                        <span>Исполнитель:</span> <UserName id={item["исполнитель"]} />
+                      </p>)
+                    }
+                    <p>
+                      <span>Приоритет:</span> {item["приоритет"].slice(0, 1).toUpperCase() + item["приоритет"].slice(1)}
+                    </p>
+                  </div>
+
+                  <Link to="/task/" onClick={() => localStorage.setItem('task', JSON.stringify(item))}>
+                    Подробнее <img src={Icons.arrow_black} alt="" />
+                  </Link>
+                </div>
+              )
+            })
           }
         </div>
       </div>

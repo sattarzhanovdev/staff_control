@@ -53,5 +53,20 @@ export const API = {
     headers: {
       Authorization: `token ${token}`
     }
-  }) 
+  }), 
+  postExpense: (data) => axios.post('/расходы/', data, {
+    headers: {
+      Authorization: `token ${token}`
+    }
+  }), 
+  getExpenses: () => axios.get('/расходы/', {
+    headers: {
+      Authorization: `token ${token}`
+    }
+  }), 
+  getExpensesMore: () => axios.get('/расходы/сводка/', {
+    headers: {
+      Authorization: `token ${token}`
+    }
+  })
 }

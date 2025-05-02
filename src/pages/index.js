@@ -1,3 +1,4 @@
+import AddExpense from "../components/addExpense";
 import AddWorker from "./addWorker";
 import Attendance from "./attendance";
 import Expenses from "./expenses";
@@ -19,5 +20,6 @@ export const Pages = {
   Workers, 
   Attendance, 
   AddWorker, 
-  Expenses
+  Expenses, 
+  AddExpense
 }

@@ -39,4 +39,28 @@
     color: white;
     cursor: pointer;
   }
+
+  .expenses_list{
+    width: 90%;
+    margin-top: 50px;
+    .card{
+      width: 100%;
+      height: 150px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      flex-direction: column;
+      background: #89d329;
+      border-radius: 12px;
+      p{
+        margin: 0;
+        margin-left: 15px;
+        span{
+          color: black;
+          font-weight: 600;
+        }
+      }
+    }
+  }
 }

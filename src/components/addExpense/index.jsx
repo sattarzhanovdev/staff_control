@@ -82,6 +82,22 @@ const AddExpense = () => {
               <option value="" disabled>Категория</option>
               <option value="закуп">Закуп</option>
               <option value="оплата за смену">Оплата за смену</option>
+              <option value="аванс">Аванс</option>
+              <option value="зарплата">Зарплата</option>
+            </select>
+          </div>
+
+          <div>
+            <select
+              value={formData.работник}
+              onChange={(e) => handleChange('категория', e.target.value)}
+              required
+            >
+              <option value="" disabled>Категория</option>
+              <option value="закуп">Закуп</option>
+              <option value="оплата за смену">Оплата за смену</option>
+              <option value="аванс">Аванс</option>
+              <option value="зарплата">Зарплата</option>
             </select>
           </div>
 

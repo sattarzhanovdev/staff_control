@@ -18,7 +18,9 @@ const AddWorker = () => {
     просроченные_задачи: 0,
     отработанные_часы: 0.0,
     зарплата: '0.00',
-    премия: '0.00'
+    премия: '0.00',
+    смена: "",
+    рабочие_дни: ""
   });
 
   const handleChange = (e) => {
@@ -29,7 +31,9 @@ const AddWorker = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = localStorage.getItem('token');
+      console.log(token);
+      
       await axios.post('/register/', formData, {
         headers: {
           Authorization: `Token ${token}`
@@ -50,18 +54,23 @@ const AddWorker = () => {
         <form onSubmit={handleSubmit} className={c.form}>
           <input type="text" name="username" placeholder="Логин" onChange={handleChange} required />
           <input type="password" name="password" placeholder="Пароль" onChange={handleChange} required />
+          <input type="number" name="год_рождения" placeholder="Год рождения" onChange={handleChange} required />
           <input type="email" name="email" placeholder="Email" onChange={handleChange} />
+          <input type="text" name="телефон" placeholder="Телефон" onChange={handleChange} required />
           <input type="text" name="имя" placeholder="Имя" onChange={handleChange} required />
           <input type="text" name="фамилия" placeholder="Фамилия" onChange={handleChange} required />
           <input type="text" name="должность" placeholder="Должность" onChange={handleChange} required />
-          <input type="number" name="год_рождения" placeholder="Год рождения" onChange={handleChange} required />
+          <input type="text" name="рабочие_дни" placeholder="Рабочие дни" onChange={handleChange} required />
           <input type="number" name="зарплата" placeholder="Зарплата" onChange={handleChange} required />
+          <select name='смена' onChange={handleChange} required>
+            <option value="Ночная">Ночная</option>
+            <option value="Дневная">Дневная</option>
+          </select>          
           <select name='тип_получения_зарплаты' onChange={handleChange} required>
             <option value="Фиксированное">Фиксированное</option>
             <option value="Дневное">Дневное</option>
           </select>
           <input type="time" name="график_работы" placeholder="График (например, 09:00)" onChange={handleChange} required />
-          <input type="text" name="телефон" placeholder="Телефон" onChange={handleChange} required />
           <button type="submit" className={c.btn}>Добавить</button>
         </form>
       </div>

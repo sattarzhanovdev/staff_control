@@ -49,7 +49,7 @@ const Tasks = () => {
               const isOverdue = new Date(item["срок"]) < new Date();
 
               return (
-                <div className={c.task} id={isOverdue ? c.overdue : ''}>
+                <div className={c.task} id={isOverdue ? c.overdue : ''} sele>
                   <h3>
                     {item["название"]}
                   </h3>

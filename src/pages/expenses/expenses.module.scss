@@ -43,6 +43,10 @@
   .expenses_list{
     width: 90%;
     margin-top: 50px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 12px;
     .card{
       width: 100%;
       height: 150px;

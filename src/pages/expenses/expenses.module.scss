@@ -40,9 +40,24 @@
     cursor: pointer;
   }
 
+  .filteration{
+    width: 90%;
+    margin-top: 40px;
+    div{
+      select{
+        width: 100%;
+        height: 36px;
+        border-radius: 10px;
+        border: 1px solid #98CA02;
+        padding-left: 10px;
+        outline: none;
+      }
+    }
+  }
+
   .expenses_list{
     width: 90%;
-    margin-top: 50px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
     flex-direction: column;

@@ -6,12 +6,19 @@ import { Icons } from '../../assets/icons';
 import { useNavigate } from 'react-router-dom';
 
 const AddExpense = () => {
+  const [ workers, setWorkers ] = React.useState(null)
   const [formData, setFormData] = useState({
     название: '',
     дата: '',
     категория: '',
+    исполнитель: "",
     сумма: ''
   });
+
+  React.useEffect(() => {
+    API.getWorkers()
+      .then(res => setWorkers(res.data))
+  }, [])
 
   const handleChange = (key, value) => {
     setFormData(prev => ({ ...prev, [key]: value }));
@@ -30,14 +37,15 @@ const AddExpense = () => {
         название: formData.название,
         дата: formattedDate,
         категория: formData.категория,
+        исполнитель: formData.исполнитель.length !== 0 ? formData.исполнитель : '',
         сумма: parseInt(formData.сумма, 10)
       };
 
       const response = await API.postExpense(dataToSend);
 
       if (response.status === 201) {
-        window.location.reload();
         Navigate('/expenses/')
+        window.location.reload();
       }
     } catch (error) {
       console.error('Ошибка при отправке:', error);
@@ -87,19 +95,26 @@ const AddExpense = () => {
             </select>
           </div>
 
-          <div>
-            <select
-              value={formData.работник}
-              onChange={(e) => handleChange('категория', e.target.value)}
-              required
-            >
-              <option value="" disabled>Категория</option>
-              <option value="закуп">Закуп</option>
-              <option value="оплата за смену">Оплата за смену</option>
-              <option value="аванс">Аванс</option>
-              <option value="зарплата">Зарплата</option>
-            </select>
-          </div>
+          {
+            formData.категория === 'оплата за смену' || formData.категория === "аванс" || formData.категория === "зарплата"  ?
+            (
+              <div>
+                <select
+                  value={formData.исполнитель}
+                  onChange={(e) => handleChange('исполнитель', e.target.value)}
+                  required
+                >
+                <option value="" disabled>Работник</option>
+                  {
+                    workers && workers.map(item => (
+                      <option value={`${item['имя']} ${item['фамилия']}`}>{item['имя']} {item['фамилия']}</option>
+                    ))
+                  }
+                </select>
+              </div>
+            ) :
+            null
+          }
 
           <div>
             <input

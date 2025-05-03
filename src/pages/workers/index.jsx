@@ -5,12 +5,16 @@ import { useNavigate } from 'react-router-dom'
 
 const Workers = () => {
   const [ workers, setWorkers ] = React.useState([])
+  const [ expensesList, setExpensesList ] = React.useState(null)
 
   React.useEffect(() => {
     API.getWorkers()
       .then(res => {
         setWorkers(res.data)
       })
+
+    API.getExpenses()
+      .then(res => setExpensesList(res.data.reverse()))
   }, [])
 
   const deleteWorker = (id) => {
@@ -27,6 +31,24 @@ const Workers = () => {
   const Navigate = useNavigate()
   console.log(workers);
   
+  const findExpense = (worker) => {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); // последний день месяца
+    
+    const total = expensesList
+      .filter(item => {
+        const itemDate = new Date(item['дата']);
+        return (
+          item['исполнитель'] === worker &&
+          itemDate >= startOfMonth &&
+          itemDate <= endOfMonth
+        );
+      })
+      .reduce((sum, item) => sum + Number(item['сумма']), 0);  
+    
+    return total
+  }
 
   return (
     <div className={c.container}>
@@ -43,6 +65,7 @@ const Workers = () => {
                 <p>Зарплата: <span>{item["зарплата"]} сом</span></p>
                 <p>Бонус: <span>{Number(item["отработанные_часы"]) > 286 ? (Number(item["отработанные_часы"])-286) * (Number(item['зарплата'])/26/11).toFixed(0, 2): 0} сом</span></p>
                 {/* <p>Зарплата: <span>{Number(item["зарплата"]) + Math.floor(((item.зарплата / 26) / 11) * Number(item["отработанные_часы"]))} сом</span></p> */}
+                <p>Итог: <span>{(Number(item["зарплата"]) + (Number(item["отработанные_часы"]) > 286 ? (Number(item["отработанные_часы"])-286) * (Number(item['зарплата'])/26/11).toFixed(0, 2): 0)) - findExpense(`${item["имя"]} ${item["фамилия"]}`)} сом</span></p>
                 <p>Тип получения зарплаты: <span>{item["тип_получения_зарплаты"]}</span></p>
                 <p>Жизни: <span>{item["жизни"]}</span></p>
                 <p>Отработанные часы: <span>{Number(item["отработанные_часы"]).toFixed(2)} часов</span></p>

@@ -36,8 +36,7 @@ const Workers = () => {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); // последний день месяца
     
-    const total = expensesList
-      .filter(item => {
+    const total = expensesList?.filter(item => {
         const itemDate = new Date(item['дата']);
         return (
           item['исполнитель'] === worker &&

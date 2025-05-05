@@ -55,6 +55,9 @@ const Expenses = () => {
     return total
   }
 
+  console.log(expensesList);
+  
+
 
   return (
     <div className={c.expenses}>

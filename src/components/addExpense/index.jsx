@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const AddExpense = () => {
   const [ workers, setWorkers ] = React.useState(null)
+  const [ disabled, setDisabled ] = React.useState(false)
   const [formData, setFormData] = useState({
     название: '',
     дата: '',
@@ -95,26 +96,20 @@ const AddExpense = () => {
             </select>
           </div>
 
-          {
-            formData.категория === 'оплата за смену' || formData.категория === "аванс" || formData.категория === "зарплата"  ?
-            (
-              <div>
-                <select
-                  value={formData.исполнитель}
-                  onChange={(e) => handleChange('исполнитель', e.target.value)}
-                  required
-                >
-                <option value="" disabled>Работник</option>
-                  {
-                    workers && workers.map(item => (
-                      <option value={`${item['имя']} ${item['фамилия']}`}>{item['имя']} {item['фамилия']}</option>
-                    ))
-                  }
-                </select>
-              </div>
-            ) :
-            null
-          }
+          <div>
+            <select
+              value={formData.исполнитель}
+              onChange={(e) => handleChange('исполнитель', e.target.value)}
+              required
+            >
+            <option value="" disabled>Работник</option>
+              {
+                workers && workers.map(item => (
+                  <option value={`${item['имя']} ${item['фамилия']}`}>{item['имя']} {item['фамилия']}</option>
+                ))
+              }
+            </select>
+          </div>
 
           <div>
             <input
@@ -126,7 +121,7 @@ const AddExpense = () => {
             />
           </div>
 
-          <button type="submit">Добавить</button>
+          <button type="submit" onClick={() => setDisabled(true)} disabled={disabled}>Добавить</button>
         </form>
       </div>
     </div>

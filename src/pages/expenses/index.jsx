@@ -55,10 +55,6 @@ const Expenses = () => {
     return total
   }
 
-  console.log(expensesList);
-  
-
-
   return (
     <div className={c.expenses}>
       <div className={c.info}>
@@ -97,7 +93,7 @@ const Expenses = () => {
     
       <div className={c.expenses_list}>
         {
-          expensesList && expensesList.map(item => (
+          expensesList && expensesList?.map(item => (
             <div className={c.card}>
               <p><span>Название:</span> {item['название']}</p>
               <p><span>Категория:</span> {item['категория']}</p>

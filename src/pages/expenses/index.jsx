@@ -82,7 +82,7 @@ const Expenses = () => {
           >
           <option value="" disabled selected>Работник</option>
             {
-              workers && workers.map(item => (
+              workers && workers?.map(item => (
                 <option value={`${item['имя']} ${item['фамилия']}`}>{item['имя']} {item['фамилия']}</option>
               ))
             }

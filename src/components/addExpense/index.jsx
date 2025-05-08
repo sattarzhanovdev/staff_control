@@ -121,7 +121,7 @@ const AddExpense = () => {
             />
           </div>
 
-          <button type="submit" onClick={() => setDisabled(true)} disabled={disabled}>Добавить</button>
+          <button type="submit">Добавить</button>
         </form>
       </div>
     </div>
